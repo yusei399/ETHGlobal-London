@@ -46,7 +46,7 @@ const ConnectWallet = () => {
     }
   };
 
-  const fetchEthBalance = async (address) => {
+  const fetchEthBalance = async (address:any) => {
     if (web3) {
       try {
         const balanceInWei = await web3.eth.getBalance(address);
@@ -58,12 +58,13 @@ const ConnectWallet = () => {
     }
   };
 
-  const fetchTokenBalance = async (address) => {
+  const fetchTokenBalance = async (address : any) => {
     if (web3) {
       try {
         const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
         const balance = await tokenContract.methods.balanceOf(address).call();
-        const balanceInTokens = web3.utils.fromWei(balance, 'ether');
+        const balanceInTokens = web3.utils.fromWei(String(balance), 'ether');
+
         setTokenBalance(balanceInTokens);
       } catch (error) {
         console.error('トークン残高の取得に失敗しました。', error);
