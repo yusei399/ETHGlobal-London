@@ -1,20 +1,30 @@
 "use client";
-import React, { useState } from 'react';
-import { Card, Box, CardHeader, CardContent, Button, useTheme, useMediaQuery, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import ConnectWallet from '../auth/Wallet';
 
-const Dashboard = () => {
+import React, { useState } from 'react';
+import { Box, Button, Card, CardContent, CardHeader, useMediaQuery, useTheme, SelectChangeEvent } from '@mui/material';
+import ConnectWallet from '../auth/Wallet';
+import DashboardTypeSwitcher from './DashboardTypeSwitcher';
+import QuantityInputWithCoinSelect from './QuantityInputWithCoinSelect';
+
+const Dashboard: React.FC = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const [coin1, setCoin1] = useState(''); 
-  const [coin2, setCoin2] = useState('');
+  const [coin1, setCoin1] = useState<string>('');
+  const [quantity1, setQuantity1] = useState('');
+  const [coin2, setCoin2] = useState<string>('');
+  const [quantity2, setQuantity2] = useState('');
+  const [dashboardType, setDashboardType] = useState<'staker' | 'beginner'>('staker');
+  const [coinOptions, setCoinOptions] = useState([
+    { value: 'ETH', label: 'ETH' },
+    { value: 'World Coin', label: 'World Coin' }
+  ]);
 
-  const handleChange1 = (event:any) => {
-    setCoin1(event.target.value);
-  };
-
-  const handleChange2 = (event:any) => {
-    setCoin2(event.target.value);
+  const handleDashboardTypeChange = (type: 'staker' | 'beginner') => {
+    setDashboardType(type);
+    const newCoinOptions = type === 'staker'
+      ? [{ value: 'ETH', label: 'ETH' }, { value: 'World Coin', label: 'World Coin' }]
+      : [{ value: 'World Coin', label: 'World Coin' }, { value: 'ETH', label: 'ETH' }];
+    setCoinOptions(newCoinOptions);
   };
 
   return (
@@ -22,54 +32,45 @@ const Dashboard = () => {
       <Box sx={{ position: 'absolute', top: 0, right: 0, padding: '20px' }}>
         <ConnectWallet />
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+        <DashboardTypeSwitcher onChange={handleDashboardTypeChange} />
         <Card sx={{
           width: isDesktop ? '70%' : '100%',
           maxWidth: '1000px',
           transition: '0.3s',
         }}>
-          <CardHeader title="Stake!" titleTypographyProps={{ align: 'center', variant: 'h4' }} />
+          <CardHeader title={dashboardType === 'staker' ? "Stake!" : "Beginner's Guide"} titleTypographyProps={{ align: 'center', variant: 'h4' }} />
           <CardContent>
-            <Box display="flex" flexDirection="column" alignItems="flex-end">
-              <FormControl sx={{ width: '240px', mb: 2 }}>
-                <InputLabel id="coin-select-label-1">Choose a coin</InputLabel>
-                <Select
-                  labelId="coin-select-label-1"
-                  id="coin-select-1"
-                  value={coin1}
-                  label="Choose a coin"
-                  onChange={handleChange1}
-                  variant="outlined"
-                >
-                  <MenuItem value="ETH">ETH</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl sx={{ width: '240px' }}>
-                <InputLabel id="coin-select-label-2">Choose another coin</InputLabel>
-                <Select
-                  labelId="coin-select-label-2"
-                  id="coin-select-2"
-                  value={coin2}
-                  label="Choose another coin"
-                  onChange={handleChange2}
-                  variant="outlined"
-                >
-                  <MenuItem value="World Coin">World Coin</MenuItem>
-                </Select>
-              </FormControl>
+            <Box display="flex" flexDirection="column" alignItems="flex-end" gap={2}>
+            <QuantityInputWithCoinSelect
+              id="coin-quantity-1"
+              value={coin1}
+              quantity={quantity1}
+              onQuantityChange={(e) => setQuantity1(e.target.value)}
+              onCoinChange={(e: SelectChangeEvent<string>) => setCoin1(e.target.value)}
+              coinOptions={coinOptions}
+            />
+            <QuantityInputWithCoinSelect
+              id="coin-quantity-2"
+              value={coin2}
+              quantity={quantity2}
+              onQuantityChange={(e) => setQuantity2(e.target.value)}
+              onCoinChange={(e: SelectChangeEvent<string>) => setCoin2(e.target.value)} 
+              coinOptions={coinOptions}
+            />
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  display: 'block',
+                  width: '40%',
+                  mx: 'auto',
+                  borderRadius: '20px',
+                }}
+              >
+                Confirm
+              </Button>
             </Box>
-            <Button
-              variant="contained"
-              sx={{
-                mt: 2,
-                display: 'block',
-                width: '40%',
-                mx: 'auto',
-                borderRadius: '20px',
-              }}
-            >
-              Confirm
-            </Button>
           </CardContent>
         </Card>
       </Box>
