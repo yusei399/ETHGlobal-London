@@ -27,12 +27,12 @@ if (!providerUrl) {
 // console.log("providerUrl", providerUrl);
 console.log("chain id", Network.ETH_SEPOLIA);
 
-connectProvider(providerUrl)
-	.then((provider) => {
-		if (provider) {
-			console.log("Provider connected");
-		} else {
-			console.log("Failed to connect provider");
-		}
-	})
-	.catch(console.error);
+// connectProvider(providerUrl)
+// 	.then((provider) => {
+// 		if (provider) {
+// 			console.log("Provider connected");
+// 		} else {
+// 			console.log("Failed to connect provider");
+// 		}
+// 	})
+// 	.catch(console.error);

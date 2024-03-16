@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
-import { createSignersFromMnemonic } from "./signer";
-import { connectProvider } from "./connect";
+import { updateCoin, updateToken } from "./balance";
+import { init } from "./init";
+import { mintToken } from "./mint";
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -69,26 +70,44 @@ async function sendMetaTransaction(signer: any, request: any) {
 }
 
 async function main() {
-	const providerUrl: string = process.env.SEPOILA_PROVIDER_URL || "";
-    if (!providerUrl) {
-        throw new Error("SEPOILA_PROVIDER_URL is not set");
-    }
+	const [provider, wallets, relayerSigner] = await init();
+    // const toAddress = "0x6b07154C8e768673578e539854C70a8703D613b1";
+    // const amount = 10;
 
-	const provider: ethers.JsonRpcProvider | null = await connectProvider(providerUrl);
-	if (!provider) {
-		throw new Error("Failed to connect provider");
-	}
-
-    const signers = createSignersFromMnemonic(provider);
-    const toAddress = "0x6b07154C8e768673578e539854C70a8703D613b1";
-    const amount = ethers.utils.parseEther("0.1");
+	await updateCoin(provider, [relayerSigner]);
+	console.log("mint to relayer");
+	await mintToken(provider, [relayerSigner], 100);
 
     try {
-        const signer = signers[0];
-        const request = await signMetaTransferTransaction(signer, toAddress, amount);
-        await sendMetaTransaction(signer, request);
-        console.log("メタトランザクションが成功しました。");
-    } catch (error) {
-        console.error("メタトランザクションの処理中にエラーが発生しました。", error);
-    }
+        const user1 = wallets[0];
+		console.log("user1", user1.address, "relayer", relayerSigner.address);
+		console.log("relayer transfers 10 to user1");
+        const request1 = await signMetaTransferTransaction(relayerSigner, user1.address, 10);
+		console.log({ request1 });
+        await sendMetaTransaction(relayerSigner, request1);
+		console.log("sccess sending meta tx 1");
+		await updateToken(provider, [user1]);
+		await updateCoin(provider, [user1]);
+		await updateToken(provider, [relayerSigner]);
+		await updateCoin(provider, [relayerSigner]);
+
+		const user2 = wallets[1];
+		console.log("user1", user1.address, "user2", user2.address);
+		console.log("user1 transfers 3 to user2");
+		const request2 = await signMetaTransferTransaction(user1, user2.address, 3);
+		console.log({ request2 });
+		await sendMetaTransaction(relayerSigner, request2);
+		console.log("sccess sending meta tx 2");
+		await updateToken(provider, [user1]);
+		await updateCoin(provider, [user1]);
+		await updateToken(provider, [user2]);
+		await updateCoin(provider, [user2]);
+		await updateToken(provider, [relayerSigner]);
+		await updateCoin(provider, [relayerSigner]);
+
+	} catch (error) {
+		console.error(error);
+	}
 }
+
+main().catch(console.error);

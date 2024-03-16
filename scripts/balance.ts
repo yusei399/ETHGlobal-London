@@ -21,7 +21,7 @@ if (!privateKey) {
 	throw new Error("RELAYER_PRIVATE_KEY is not set");
 }
 
-async function updateCoin(provider: ethers.JsonRpcProvider, wallets: any) {
+export async function updateCoin(provider: ethers.JsonRpcProvider, wallets: any) {
     if (provider) {
         try {
             for (let i = 0; i < wallets.length; i++) {
@@ -37,7 +37,7 @@ async function updateCoin(provider: ethers.JsonRpcProvider, wallets: any) {
     }
 }
 
-async function updateToken(provider: ethers.JsonRpcProvider, wallets: any) {
+export async function updateToken(provider: ethers.JsonRpcProvider, wallets: any) {
     if (provider && recipientAddress) {
         try {
             let contract = new ethers.Contract(recipientAddress, SampleRecipientJson.abi, provider);
@@ -70,4 +70,4 @@ async function main() {
 	await updateToken(provider, [relayerSigner]);
 }
 
-main().catch(console.error);
+// main().catch(console.error);
