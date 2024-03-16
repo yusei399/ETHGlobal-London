@@ -1,5 +1,7 @@
+// type.d.ts ファイル内
 interface Window {
 	ethereum?: {
-	  request: ({ method }: { method: string }) => Promise<any>;
+	  request: (request: { method: string; params?: Array<any> }) => Promise<any>;
 	};
   }
+  
