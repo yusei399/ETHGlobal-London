@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@mui/material';
 import Web3 from 'web3';
 
-const tokenAddress = '';
+const tokenAddress = '0x115131115D536dF6C4685d38dC911250704EFE8c';
 const tokenABI = [
   {
     "constant":true,
