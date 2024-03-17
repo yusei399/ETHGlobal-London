@@ -35,11 +35,11 @@ const Dashboard: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
         <DashboardTypeSwitcher onChange={handleDashboardTypeChange} />
         <Card sx={{
-          width: isDesktop ? '70%' : '100%',
-          maxWidth: '1000px',
-          transition: '0.3s',
+            width: isDesktop ? '40%' : '100%',
+            maxWidth: '500px',
+            transition: '0.3s',
         }}>
-          <CardHeader title={dashboardType === 'staker' ? "Stake!" : "Beginner's Guide"} titleTypographyProps={{ align: 'center', variant: 'h4' }} />
+          <CardHeader title={dashboardType === 'staker' ? "Staker" : "Beginner"} titleTypographyProps={{ align: 'center', variant: 'h4' }} />
           <CardContent>
             <Box display="flex" flexDirection="column" alignItems="flex-end" gap={2}>
             <QuantityInputWithCoinSelect
@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
                 sx={{
                   mt: 2,
                   display: 'block',
-                  width: '40%',
+                  width: '100%',
                   mx: 'auto',
                   borderRadius: '20px',
                 }}
